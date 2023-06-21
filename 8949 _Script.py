@@ -2,12 +2,14 @@ import csv
 import os
 import pdfrw
 
+
 def read_csv_data(file_path):
     with open(file_path, newline='', encoding='utf-8-sig') as csvfile:
         reader = csv.DictReader(csvfile)
         data = [row for row in reader]
     print(data)
     return data
+
 
 def fill_form_8949(input_pdf, output_pdf, data):
     template = pdfrw.PdfReader(input_pdf)
@@ -27,7 +29,7 @@ def fill_form_8949(input_pdf, output_pdf, data):
         for annotation in annotations:
             field_name = annotation.get('/T')
             if field_name:
-                #field_name = field_name.decode('utf-8')
+                # field_name = field_name.decode('utf-8')
                 if field_name in field_data:
                     annotation.update(pdfrw.PdfDict(V='{}'.format(field_data[field_name])))
 
@@ -35,6 +37,7 @@ def fill_form_8949(input_pdf, output_pdf, data):
             break
 
     pdfrw.PdfWriter().write(output_pdf, template)
+
 
 def main():
     csv_file_path = "import_csv.csv"  # Replace with your CSV file path
@@ -53,6 +56,7 @@ def main():
         form_data = data[start:end]
         output_pdf_path = os.path.join(output_folder, f"form_8949_{i + 1}.pdf")
         fill_form_8949(input_pdf_path, output_pdf_path, form_data)
+
 
 if __name__ == "__main__":
     main()

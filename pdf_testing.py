@@ -1,7 +1,8 @@
-import pdfrw
+from pdfrw import PdfReader
+
 
 def list_form_field_names(input_pdf):
-    template = pdfrw.PdfReader(input_pdf)
+    template = PdfReader(input_pdf)
     annotations = template.pages[0]['/Annots']
 
     field_names = []
@@ -13,6 +14,7 @@ def list_form_field_names(input_pdf):
 
     return field_names
 
-input_pdf_path = "f8949.pdf"  # Replace with your Form 8949 template file path
+
+input_pdf_path = "f8949.pdf"
 field_names = list_form_field_names(input_pdf_path)
 print("Field names in the PDF:", len(field_names))
