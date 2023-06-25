@@ -17,49 +17,9 @@ def read_csv_data(file_path):
     return data
 
 
-# def process_csv_data(csv_data, template_page, keys):
-#     num_pages = (len(csv_data) // 14) + 1
-#     pdf = PdfWriter()
-#
-#     for _ in range(num_pages):
-#         new_page = copy_page_with_annotations(template_page)
-#         pdf.addPage(new_page)
-#
-#     new_pdf.write(new_pdf_path)
-#     new_pdf = PdfReader(new_pdf_path)
-#
-#     index_offset = 0
-#     for page in pdf.pages:
-#         annotations = page['/Annots']
-
-
-def main():
-    short_csv = "short.csv"
-    long_csv = "long.csv"
-    template_pdf = "f8949.pdf"
-    output_folder = "output"
-
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
-
-    keys = ['Asset', 'Date Acquired', 'Date Sold', 'Proceeds', 'Cost Basis', 'Empty1', ' Empty2', 'Gain or Loss']
-    short_data = read_csv_data(short_csv)
-    short_pages = (len(short_data) // 14) + 1
-
-    input_template = PdfReader(template_pdf)
-    template_page = input_template.pages[0]
-
-    new_pdf = PdfWriter()
-    new_pdf_path = "output/output_shell.pdf"
-    for i in range(short_pages):
-        new_page = copy_page_with_annotations(template_page)
-        new_pdf.addPage(new_page)
-    new_pdf.write(new_pdf_path)
-
-    new_pdf = PdfReader(new_pdf_path)
-
+def compare_memory(pdf):
     all_annotations = []
-    for page in new_pdf.pages:
+    for page in pdf.pages:
         annotations = page['/Annots']
         all_annotations.append(annotations)
 
@@ -70,8 +30,21 @@ def main():
             print(f"  Page {page_num + 1}: Memory address: {id(annotation)}")
         print()
 
+
+def process_csv_data(csv_data, template_page, keys, key):
+    num_pages = (len(csv_data) // 14) + 1
+    pdf = PdfWriter()
+    pdf_path = f"output/output_shell{key}.pdf"
+
+    for _ in range(num_pages):
+        new_page = copy_page_with_annotations(template_page)
+        pdf.addPage(new_page)
+
+    pdf.write(pdf_path)
+    pdf = PdfReader(pdf_path)
+
     index_offset = 0
-    for page in new_pdf.pages:
+    for page in pdf.pages:
         annotations = page['/Annots']
 
         # fill in the initial fields
@@ -83,18 +56,15 @@ def main():
         proceeds_sum, costbasis_sum, gain_loss_sum = 0, 0, 0
         for i, annotation in enumerate(annotations[5:-5]):
             i += index_offset
-            field_name = annotation['/T'][1:-1]
             field_type = annotation['/FT']
 
-            if field_type == '/Tx':  # Text field
+            if field_type == '/Tx':
                 row = (i // 8)
                 col = i % 8
 
-                if row < len(short_data):
-                    value = short_data[row].get(keys[col])
-                    # print(value)
+                if row < len(csv_data):
+                    value = csv_data[row].get(keys[col])
                 else:
-                    # If the row doesn't exist, use a default value
                     print(f"breaking at {i}")
                     break
 
@@ -120,9 +90,38 @@ def main():
 
         index_offset += 14 * 8
 
-    PdfWriter().write('output/output_filled.pdf', new_pdf)
+    return pdf
+
+
+def main():
+    short_csv = "short.csv"
+    long_csv = "long.csv"
+    template_pdf = "f8949.pdf"
+    output_folder = "output"
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    keys = ['Asset', 'Date Acquired', 'Date Sold', 'Proceeds', 'Cost Basis', 'Empty1', ' Empty2', 'Gain or Loss']
+    input_template = PdfReader(template_pdf)
+    short_template_page = input_template.pages[0]
+    long_template_page = input_template.pages[1]
+
+    short_data = read_csv_data(short_csv)
+    long_data = read_csv_data(long_csv)
+
+    short_pdf = process_csv_data(short_data, short_template_page, keys, "short")
+    long_pdf = process_csv_data(long_data, long_template_page, keys, "long")
+
+    # Combine short_pdf and long_pdf
+    combined_pdf = PdfWriter()
+    for page in short_pdf.pages:
+        combined_pdf.addPage(page)
+    for page in long_pdf.pages:
+        combined_pdf.addPage(page)
+
+    combined_pdf.write('output/output_filled.pdf')
 
 
 if __name__ == "__main__":
     main()
-#bleh
