@@ -3,6 +3,7 @@ import csv
 from pdfrw import PdfReader, PdfDict, PdfWriter, PdfName
 
 
+# necessary so that we can get copies of a page, not references to the same page
 def copy_page_with_annotations(page):
     new_page = PdfDict(page)
     if PdfName.Annots in new_page:
