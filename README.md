@@ -2,6 +2,8 @@
 
 This Python script reads data from CSV files and fills a PDF form template with the data. It's designed to work with a specific PDF form (Form 8949) and two CSV files (short-term and long-term transactions).
 
+![img.png](img.png)
+
 ## Overview
 
 The script consists of several functions that perform the following tasks:
