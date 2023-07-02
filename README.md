@@ -28,7 +28,7 @@ The script consists of several functions that perform the following tasks:
 1. Ensure you have the required dependencies installed: `pdfrw`.
 2. Place your CSV files (short-term and long-term transactions) in the same directory as the script.
 3. Update the `short_csv`, `long_csv`, and `template_pdf` variables in the `main()` function to match your file names.
-4. Run the script: `python pdf_form_filler.py`.
+4. Run the script: `python csv_to_8949.py`.
 5. The filled PDF form will be saved in the `output` directory as `output_filled.pdf`.
 
 ## Dependencies
