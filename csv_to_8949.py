@@ -74,7 +74,7 @@ def fill_pdf_page_with_data(page, csv_data, keys, index_offset):
 def fill_initial_fields(annotations):
     """Fill in the initial fields of the PDF page."""
     annotations[0].update(PdfDict(V='{}'.format("Mackenzie Patel"), AS='{}'.format("Mackenzie Patel")))
-    annotations[1].update(PdfDict(V='{}'.format("420-69-4200"), AS='{}'.format("420-69-4200")))
+    annotations[1].update(PdfDict(V='{}'.format("123-45-6789"), AS='{}'.format("123-45-6789")))
     annotations[4].update(PdfDict(V=PdfName('On'), AS=PdfName('On')))
 
 
