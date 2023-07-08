@@ -100,12 +100,15 @@ def fill_table(annotations, csv_data, keys, index_offset):
             if col == 3:
                 proceeds_value = float(value.replace('$', '').replace(',', ''))
                 proceeds_sum += proceeds_value
+                proceeds_sum = round(proceeds_sum, 2)
             elif col == 4:
                 costbasis_value = float(value.replace('$', '').replace(',', ''))
                 costbasis_sum += costbasis_value
+                costbasis_sum = round(costbasis_sum, 2)
             elif col == 7:
                 gain_loss_value = float(value.replace('$', '').replace(',', ''))
                 gain_loss_sum += gain_loss_value
+                gain_loss_sum = round(gain_loss_sum, 2)
         else:
             print("Unknown field type:", field_type)
 
